@@ -1,6 +1,6 @@
-from PyWSendInput import SENDINPUT, INPUT, INPUT_MOUSE, MOUSEINPUT
 from ctypes import byref, sizeof
 from time import sleep
+from PyWSendInput import SENDINPUT, INPUT, INPUT_MOUSE, MOUSEINPUT
 
 XBUTTON1 = 0x0001
 XBUTTON2 = 0x0002
