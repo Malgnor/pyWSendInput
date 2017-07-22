@@ -1,48 +1,11 @@
-from ctypes import wintypes, Structure, Union, WinDLL, POINTER
+from ctypes import wintypes, Structure, Union, WinDLL, POINTER, c_short
 
-''' https://msdn.microsoft.com/en-us/library/ms646310(v=vs.85).aspx
-UINT WINAPI SendInput(
-  _In_ UINT    nInputs,
-  _In_ LPINPUT pInputs,
-  _In_ int     cbSize
-);
-
-typedef struct tagMOUSEINPUT {
-  LONG      dx;
-  LONG      dy;
-  DWORD     mouseData;
-  DWORD     dwFlags;
-  DWORD     time;
-  ULONG_PTR dwExtraInfo;
-} MOUSEINPUT, *PMOUSEINPUT;
-
-typedef struct tagKEYBDINPUT {
-  WORD      wVk;
-  WORD      wScan;
-  DWORD     dwFlags;
-  DWORD     time;
-  ULONG_PTR dwExtraInfo;
-} KEYBDINPUT, *PKEYBDINPUT;
-
-typedef struct tagHARDWAREINPUT {
-  DWORD uMsg;
-  WORD  wParamL;
-  WORD  wParamH;
-} HARDWAREINPUT, *PHARDWAREINPUT;
-
-typedef struct tagINPUT {
-  DWORD type;
-  union {
-    MOUSEINPUT    mi;
-    KEYBDINPUT    ki;
-    HARDWAREINPUT hi;
-  };
-} INPUT, *PINPUT;
-'''
+# https://msdn.microsoft.com/en-us/library/ms646310(v=vs.85).aspx
 
 INPUT_MOUSE = 0
 INPUT_KEYBOARD = 1
 INPUT_HARDWARE = 2
+
 
 class MOUSEINPUT(Structure):
     _fields_ = [('dx', wintypes.LONG),
@@ -79,5 +42,20 @@ class INPUT(Structure):
                 ('union', UNION)]
 
 
-SENDINPUT = WinDLL('user32').SendInput
+class KEYSCANRES(Structure):
+    _fields_ = [('vkCode', c_short, 8),
+                ('shiftState', c_short, 8)]
+
+
+USER32 = WinDLL('user32')
+
+SENDINPUT = USER32.SendInput
 SENDINPUT.argtypes = [wintypes.UINT, POINTER(INPUT), wintypes.INT]
+
+VKKEYSCANEX = USER32.VkKeyScanExW
+VKKEYSCANEX.argtypes = [wintypes.WCHAR, wintypes.HKL]
+VKKEYSCANEX.restype = KEYSCANRES
+
+GETKEYBOARDLAYOUT = USER32.GetKeyboardLayout
+GETKEYBOARDLAYOUT.argtypes = [wintypes.DWORD]
+GETKEYBOARDLAYOUT.restype = wintypes.HKL
