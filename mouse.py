@@ -24,19 +24,19 @@ MOUSEEVENTF_XUP = 0x0100
 def __mouse_click(flag):
     mouse_input = INPUT(INPUT_MOUSE, mi=MOUSEINPUT(
         dwFlags=flag))
-    SENDINPUT(1, byref(mouse_input), sizeof(mouse_input))
+    SENDINPUT(1, byref(mouse_input), sizeof(INPUT))
 
 
 def mouse_move(input_x, input_y, absolute=False):
     mouse_input = INPUT(INPUT_MOUSE, mi=MOUSEINPUT(
         input_x, input_y, dwFlags=MOUSEEVENTF_MOVE + (MOUSEEVENTF_ABSOLUTE if absolute else 0x0)))
-    SENDINPUT(1, byref(mouse_input), sizeof(mouse_input))
+    SENDINPUT(1, byref(mouse_input), sizeof(INPUT))
 
 
 def mouse_wheel_move(movement, horizontal=False):
     mouse_input = INPUT(INPUT_MOUSE, mi=MOUSEINPUT(
         mouseData=movement, dwFlags=MOUSEEVENTF_HWHEEL if horizontal else MOUSEEVENTF_WHEEL))
-    SENDINPUT(1, byref(mouse_input), sizeof(mouse_input))
+    SENDINPUT(1, byref(mouse_input), sizeof(INPUT))
 
 
 def mouse_left_click(repeats=1, delay=0):

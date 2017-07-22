@@ -10,13 +10,13 @@ KEYEVENTF_UNICODE = 0x0004
 
 def keyboard_press(vkcode):
     keyboard_input = INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT(vkcode))
-    SENDINPUT(1, byref(keyboard_input), sizeof(keyboard_input))
+    SENDINPUT(1, byref(keyboard_input), sizeof(INPUT))
 
 
 def keyboard_release(vkcode):
     keyboard_input = INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT(
         vkcode, dwFlags=KEYEVENTF_KEYUP))
-    SENDINPUT(1, byref(keyboard_input), sizeof(keyboard_input))
+    SENDINPUT(1, byref(keyboard_input), sizeof(INPUT))
 
 
 def keyboard_tap(vkcode, repeats=1, delay=0):
@@ -25,4 +25,3 @@ def keyboard_tap(vkcode, repeats=1, delay=0):
     for _ in range(0, repeats):
         SENDINPUT(2, keyboard_inputs, sizeof(INPUT))
         sleep(delay)
-        
