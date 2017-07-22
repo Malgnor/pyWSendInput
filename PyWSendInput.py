@@ -1,8 +1,7 @@
 from ctypes import *
 from ctypes import wintypes
-import time, math
 
-'''
+''' https://msdn.microsoft.com/en-us/library/ms646310(v=vs.85).aspx
 UINT WINAPI SendInput(
   _In_ UINT    nInputs,
   _In_ LPINPUT pInputs,
@@ -65,18 +64,21 @@ class HARDWAREINPUT(Structure):
                 ('wParamL', wintypes.WORD),
                 ('wParamH', wintypes.WORD)]
 
+
 class UNION(Union):
     _fields_ = [('mi', MOUSEINPUT),
                 ('ki', KEYBDINPUT),
                 ('hi', HARDWAREINPUT)]
+
 
 class INPUT(Structure):
     _anonymous_ = ('union',)
     _fields_ = [('type', wintypes.DWORD),
                 ('union', UNION)]
 
-SendInput = WinDLL('user32').SendInput
-SendInput.argtypes = [wintypes.UINT, POINTER(INPUT), wintypes.INT]
+
+SENDINPUT = WinDLL('user32').SendInput
+SENDINPUT.argtypes = [wintypes.UINT, POINTER(INPUT), wintypes.INT]
 
 '''
 mouse = INPUT(0, mi=MOUSEINPUT(dwFlags=0x0001))
