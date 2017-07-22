@@ -1,15 +1,3 @@
-'''
-vktable = $("#mainSection > div:nth-child(4) > table > tbody")[0];
-
-var result = "";
-for(var line = 1; line < vktable.children.length; line++){
-    var ln = vktable.children[line];
-    var vkcode = ln.children[0].lastElementChild.lastElementChild.textContent;
-    var description = ln.children[1].children[0].textContent.replace(/ /g, '_').toUpperCase();
-    result += description + " = " + vkcode + "\n";
-}
-'''
-
 LEFT_MOUSE_BUTTON = 0x01
 RIGHT_MOUSE_BUTTON = 0x02
 CONTROL_BREAK_PROCESSING = 0x03
@@ -206,23 +194,30 @@ START_APPLICATION_2_KEY = 0xB7
 
 # RESERVED = 0xB8-B9
 
-SEMICOLON_COLON_KEY = 0xBA # Used for miscellaneous characters; it can vary by keyboard.
+# Used for miscellaneous characters; it can vary by keyboard.
+SEMICOLON_COLON_KEY = 0xBA
 
 PLUS_KEY = 0xBB
 COMMA_KEY = 0xBC
 DASH_KEY = 0xBD
 PERIOD_KEY = 0xBE
 
-SLASH_QUESTION_MARK_KEY = 0xBF # Used for miscellaneous characters; it can vary by keyboard.
-GRAVE_ACCENT_TILDE_KEY = 0xC0 # Used for miscellaneous characters; it can vary by keyboard.
+# Used for miscellaneous characters; it can vary by keyboard.
+SLASH_QUESTION_MARK_KEY = 0xBF
+# Used for miscellaneous characters; it can vary by keyboard.
+GRAVE_ACCENT_TILDE_KEY = 0xC0
 
 # RESERVED = 0xC1-D7
 # UNASSIGNED = 0xD8-DA
 
-OPEN_SQUARE_CURLY_BRACKETS_KEY = 0xDB # Used for miscellaneous characters; it can vary by keyboard.
-BACKSLASH_VERTICAL_BAR_KEY = 0xDC # Used for miscellaneous characters; it can vary by keyboard.
-CLOSE_SQUARE_CURLY_BRACKETS_KEY = 0xDD # Used for miscellaneous characters; it can vary by keyboard.
-SINGLE_DOUBLE_QUOTE_KEY = 0xDE # Used for miscellaneous characters; it can vary by keyboard.
+# Used for miscellaneous characters; it can vary by keyboard.
+OPEN_SQUARE_CURLY_BRACKETS_KEY = 0xDB
+# Used for miscellaneous characters; it can vary by keyboard.
+BACKSLASH_VERTICAL_BAR_KEY = 0xDC
+# Used for miscellaneous characters; it can vary by keyboard.
+CLOSE_SQUARE_CURLY_BRACKETS_KEY = 0xDD
+# Used for miscellaneous characters; it can vary by keyboard.
+SINGLE_DOUBLE_QUOTE_KEY = 0xDE
 
 '''
 USED_FOR_MISCELLANEOUS_CHARACTERS;_IT_CAN_VARY_BY_KEYBOARD. = 0xDF

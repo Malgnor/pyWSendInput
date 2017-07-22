@@ -1,5 +1,4 @@
-from ctypes import *
-from ctypes import wintypes
+from ctypes import wintypes, Structure, Union, WinDLL, POINTER
 
 ''' https://msdn.microsoft.com/en-us/library/ms646310(v=vs.85).aspx
 UINT WINAPI SendInput(
@@ -41,6 +40,9 @@ typedef struct tagINPUT {
 } INPUT, *PINPUT;
 '''
 
+INPUT_MOUSE = 0
+INPUT_KEYBOARD = 1
+INPUT_HARDWARE = 2
 
 class MOUSEINPUT(Structure):
     _fields_ = [('dx', wintypes.LONG),
@@ -79,12 +81,3 @@ class INPUT(Structure):
 
 SENDINPUT = WinDLL('user32').SendInput
 SENDINPUT.argtypes = [wintypes.UINT, POINTER(INPUT), wintypes.INT]
-
-'''
-mouse = INPUT(0, mi=MOUSEINPUT(dwFlags=0x0001))
-for ang in [math.pi/5*i for i in range(0, 21)]:
-    time.sleep(0.05)
-    mouse.mi.dx = int(math.cos(ang)*50)
-    mouse.mi.dy = int(math.sin(ang)*50)
-    SendInput(1, byref(mouse), sizeof(mouse))
-'''
