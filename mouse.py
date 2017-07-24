@@ -1,6 +1,6 @@
-from ctypes import byref, sizeof
+from ctypes import byref, sizeof, wintypes
 from time import sleep
-from PyWSendInput import SENDINPUT, INPUT, INPUT_MOUSE, MOUSEINPUT
+from PyWSendInput import SENDINPUT, INPUT, INPUT_MOUSE, MOUSEINPUT, GETSYSTEMMETRICS, GETCURSORPOS
 
 XBUTTON1 = 0x0001
 XBUTTON2 = 0x0002
@@ -70,3 +70,13 @@ def mouse_middle_click(repeats=1, delay=0):
         sleep(delay)
 
     return count
+
+
+def get_cursor_position():
+    point = wintypes.POINT()
+    GETCURSORPOS(byref(point))
+    return (point.x, point.y)
+
+
+def get_screen_size():
+    return (GETSYSTEMMETRICS(0), GETSYSTEMMETRICS(1))
