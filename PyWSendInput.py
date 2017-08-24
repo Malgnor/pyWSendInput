@@ -46,6 +46,20 @@ class KEYSCANRES(Structure):
     _fields_ = [('vkCode', c_short, 8),
                 ('shiftState', c_short, 8)]
 
+    def __repr__(self):
+        return '%r(vkCode=%r, shiftState=%r)' % (self.__class__, self.vkCode, self.shiftState)
+
+
+class KEYSTATERES(Structure):
+    _fields_ = [('wasPressed', c_short, 8),
+                ('isDown', c_short, 8)]
+
+    def __repr__(self):
+        return '%r(isDown=%r, wasPressed=%r)' % (self.__class__, self.isDown, self.wasPressed)
+
+    def __bool__(self):
+        return bool(self.wasPressed or self.isDown)
+
 
 USER32 = WinDLL('user32')
 
@@ -66,3 +80,7 @@ SETPROCESSDPIAWARE = USER32.SetProcessDPIAware
 
 GETCURSORPOS = USER32.GetCursorPos
 GETCURSORPOS.argtypes = [POINTER(wintypes.POINT)]
+
+GETASYNCKEYSTATE = USER32.GetAsyncKeyState
+GETASYNCKEYSTATE.argtypes = [wintypes.INT]
+GETASYNCKEYSTATE.restype = KEYSTATERES
