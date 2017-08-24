@@ -1,9 +1,9 @@
 from ctypes import sizeof
 from time import sleep
 
-from PyWSendInput import (GETKEYBOARDLAYOUT, INPUT, INPUT_KEYBOARD, KEYBDINPUT,
-                          SENDINPUT, VKKEYSCANEX)
-from vkcodes import ALT_KEY, CTRL_KEY, SHIFT_KEY
+from PyWSendInput._user32 import (GETKEYBOARDLAYOUT, INPUT, INPUT_KEYBOARD, KEYBDINPUT,
+                                  SENDINPUT, VKKEYSCANEX)
+from PyWSendInput.vkcodes import ALT_KEY, CTRL_KEY, SHIFT_KEY
 
 KEYEVENTF_EXTENDEDKEY = 0x0001
 KEYEVENTF_KEYUP = 0x0002

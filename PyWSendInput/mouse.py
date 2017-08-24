@@ -1,8 +1,8 @@
 from ctypes import byref, sizeof, wintypes
 from time import sleep
 
-from PyWSendInput import (GETCURSORPOS, GETSYSTEMMETRICS, INPUT, INPUT_MOUSE,
-                          MOUSEINPUT, SENDINPUT)
+from PyWSendInput._user32 import (GETCURSORPOS, GETSYSTEMMETRICS, INPUT, INPUT_MOUSE,
+                                  MOUSEINPUT, SENDINPUT)
 
 XBUTTON1 = 0x0001
 XBUTTON2 = 0x0002
