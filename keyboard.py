@@ -1,7 +1,9 @@
-from ctypes import byref, sizeof
+from ctypes import sizeof
 from time import sleep
-from PyWSendInput import SENDINPUT, INPUT, INPUT_KEYBOARD, KEYBDINPUT, GETKEYBOARDLAYOUT, VKKEYSCANEX
-from vkcodes import CTRL_KEY, SHIFT_KEY, ALT_KEY
+
+from PyWSendInput import (GETKEYBOARDLAYOUT, INPUT, INPUT_KEYBOARD, KEYBDINPUT,
+                          SENDINPUT, VKKEYSCANEX)
+from vkcodes import ALT_KEY, CTRL_KEY, SHIFT_KEY
 
 KEYEVENTF_EXTENDEDKEY = 0x0001
 KEYEVENTF_KEYUP = 0x0002
@@ -59,6 +61,9 @@ def keyboard_write(text, ignore_modifiers=False):
                 inputs.append(INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT(CTRL_KEY)))
             if MODIFIER_ALT & result.shiftState:
                 inputs.append(INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT(ALT_KEY)))
+
+        if inputs and result.vkCode == inputs[-1].ki.wVk:
+            inputs.append(INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT()))
 
         inputs.append(INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT(result.vkCode)))
 

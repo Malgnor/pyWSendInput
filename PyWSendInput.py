@@ -1,4 +1,4 @@
-from ctypes import wintypes, Structure, Union, WinDLL, POINTER, c_short
+from ctypes import POINTER, Structure, Union, WinDLL, c_short, wintypes
 
 # https://msdn.microsoft.com/en-us/library/ms646310(v=vs.85).aspx
 
