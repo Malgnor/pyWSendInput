@@ -63,9 +63,16 @@ class KEYSTATERES(Structure):
 
 USER32 = WinDLL('user32')
 
+#general
 SENDINPUT = USER32.SendInput
 SENDINPUT.argtypes = [wintypes.UINT, POINTER(INPUT), wintypes.INT]
 
+GETSYSTEMMETRICS = USER32.GetSystemMetrics
+
+SETPROCESSDPIAWARE = USER32.SetProcessDPIAware
+#endgeneral
+
+#keybord
 VKKEYSCANEX = USER32.VkKeyScanExW
 VKKEYSCANEX.argtypes = [wintypes.WCHAR, wintypes.HKL]
 VKKEYSCANEX.restype = KEYSCANRES
@@ -74,13 +81,6 @@ GETKEYBOARDLAYOUT = USER32.GetKeyboardLayout
 GETKEYBOARDLAYOUT.argtypes = [wintypes.DWORD]
 GETKEYBOARDLAYOUT.restype = wintypes.HKL
 
-GETSYSTEMMETRICS = USER32.GetSystemMetrics
-
-SETPROCESSDPIAWARE = USER32.SetProcessDPIAware
-
-GETCURSORPOS = USER32.GetCursorPos
-GETCURSORPOS.argtypes = [POINTER(wintypes.POINT)]
-
 GETASYNCKEYSTATE = USER32.GetAsyncKeyState
 GETASYNCKEYSTATE.argtypes = [wintypes.INT]
 GETASYNCKEYSTATE.restype = KEYSTATERES
@@ -88,7 +88,14 @@ GETASYNCKEYSTATE.restype = KEYSTATERES
 MAPVIRTUALKEYEX = USER32.MapVirtualKeyExW
 MAPVIRTUALKEYEX.argtypes = [wintypes.UINT, wintypes.UINT, wintypes.HKL]
 MAPVIRTUALKEYEX.restype = wintypes.UINT
+#endkeyboard
 
+#mouse
+GETCURSORPOS = USER32.GetCursorPos
+GETCURSORPOS.argtypes = [POINTER(wintypes.POINT)]
+#endmouse
+
+#window
 FINDWINDOWEX = USER32.FindWindowExW
 FINDWINDOWEX.argtypes = [wintypes.HWND, wintypes.HWND, wintypes.LPCWSTR, wintypes.LPCWSTR]
 FINDWINDOWEX.restype = wintypes.HWND
@@ -103,3 +110,4 @@ SETFOREGROUNDWINDOW.restype = wintypes.BOOLEAN
 
 GETFOREGROUNDWINDOW = USER32.GetForegroundWindow
 GETFOREGROUNDWINDOW.restype = wintypes.HWND
+#endwindow

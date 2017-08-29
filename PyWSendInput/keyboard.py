@@ -1,7 +1,8 @@
 from ctypes import sizeof
 from time import sleep
 
-from PyWSendInput._user32 import (GETKEYBOARDLAYOUT, INPUT, INPUT_KEYBOARD, KEYBDINPUT,
+from PyWSendInput._user32 import (GETASYNCKEYSTATE, GETKEYBOARDLAYOUT, INPUT,
+                                  INPUT_KEYBOARD, KEYBDINPUT, MAPVIRTUALKEYEX,
                                   SENDINPUT, VKKEYSCANEX)
 from PyWSendInput.vkcodes import ALT_KEY, CTRL_KEY, SHIFT_KEY
 
@@ -14,8 +15,14 @@ MODIFIER_SHIFT = 1
 MODIFIER_CTRL = 2
 MODIFIER_ALT = 4
 
+MAPVK_VK_TO_VSC = 0
+MAPVK_VSC_TO_VK = 1
+MAPVK_VK_TO_CHAR = 2
+MAPVK_VSC_TO_VK_EX = 3
+MAPVK_VK_TO_VSC_EX = 4
 
-def keyboard_press(vkcodes):
+
+def key_press(vkcodes):
     keyboard_inputs = (INPUT * len(vkcodes))()
     for i, vkcode in enumerate(vkcodes):
         keyboard_inputs[i] = INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT(vkcode))
@@ -23,7 +30,7 @@ def keyboard_press(vkcodes):
     return SENDINPUT(len(vkcodes), keyboard_inputs, sizeof(INPUT))
 
 
-def keyboard_release(vkcodes):
+def key_release(vkcodes):
     keyboard_inputs = (INPUT * len(vkcodes))()
     for i, vkcode in enumerate(vkcodes):
         keyboard_inputs[i] = INPUT(
@@ -32,7 +39,7 @@ def keyboard_release(vkcodes):
     return SENDINPUT(len(vkcodes), keyboard_inputs, sizeof(INPUT))
 
 
-def keyboard_tap(vkcodes, repeats=1, delay=0):
+def key_tap(vkcodes, repeats=1, delay=0):
     keyboard_inputs = (INPUT * (2 * len(vkcodes)))()
     for i, vkcode in enumerate(vkcodes):
         keyboard_inputs[(i * 2)] = INPUT(INPUT_KEYBOARD, ki=KEYBDINPUT(vkcode))
@@ -47,12 +54,12 @@ def keyboard_tap(vkcodes, repeats=1, delay=0):
     return count
 
 
-def keyboard_write(text, ignore_modifiers=False):
-    layout = GETKEYBOARDLAYOUT(0)
+def text_write(text, ignore_modifiers=False):
+    layout = get_keyboard_layout(0)
 
     inputs = []
     for char in text:
-        result = VKKEYSCANEX(char, layout)
+        result = vk_key_scan(char, layout)
 
         if not ignore_modifiers:
             if MODIFIER_SHIFT & result.shiftState:
@@ -83,3 +90,19 @@ def keyboard_write(text, ignore_modifiers=False):
         keyboard_inputs[i] = value
 
     return SENDINPUT(len(inputs), keyboard_inputs, sizeof(INPUT))
+
+
+def vk_key_scan(char, input_locale_identifier):
+    return VKKEYSCANEX(char, input_locale_identifier)
+
+
+def get_keyboard_layout(id_thread=0):
+    return GETKEYBOARDLAYOUT(id_thread)
+
+
+def get_async_key_state(vkcode):
+    return GETASYNCKEYSTATE(vkcode)
+
+
+def map_virtual_key(code, map_type, input_locale_identifier=None):
+    return MAPVIRTUALKEYEX(code, map_type, input_locale_identifier)

@@ -14,4 +14,4 @@ def set_foreground_window(window):
 
 
 def get_foreground_window():
-    return GETFOREGROUNDWINDOW
+    return GETFOREGROUNDWINDOW()
