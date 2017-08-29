@@ -84,3 +84,22 @@ GETCURSORPOS.argtypes = [POINTER(wintypes.POINT)]
 GETASYNCKEYSTATE = USER32.GetAsyncKeyState
 GETASYNCKEYSTATE.argtypes = [wintypes.INT]
 GETASYNCKEYSTATE.restype = KEYSTATERES
+
+MAPVIRTUALKEYEX = USER32.MapVirtualKeyExW
+MAPVIRTUALKEYEX.argtypes = [wintypes.UINT, wintypes.UINT, wintypes.HKL]
+MAPVIRTUALKEYEX.restype = wintypes.UINT
+
+FINDWINDOWEX = USER32.FindWindowExW
+FINDWINDOWEX.argtypes = [wintypes.HWND, wintypes.HWND, wintypes.LPCWSTR, wintypes.LPCWSTR]
+FINDWINDOWEX.restype = wintypes.HWND
+
+SWITCHTOTHISWINDOW = USER32.SwitchToThisWindow
+SWITCHTOTHISWINDOW.argtypes = [wintypes.HWND, wintypes.BOOLEAN]
+SWITCHTOTHISWINDOW.restype = wintypes.LPVOID
+
+SETFOREGROUNDWINDOW = USER32.SetForegroundWindow
+SETFOREGROUNDWINDOW.argtypes = [wintypes.HWND]
+SETFOREGROUNDWINDOW.restype = wintypes.BOOLEAN
+
+GETFOREGROUNDWINDOW = USER32.GetForegroundWindow
+GETFOREGROUNDWINDOW.restype = wintypes.HWND
