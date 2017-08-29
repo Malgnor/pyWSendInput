@@ -1,4 +1,4 @@
-from ctypes import POINTER, Structure, Union, WinDLL, c_short, wintypes
+from ctypes import POINTER, Structure, Union, WinDLL, c_short, c_bool, wintypes
 
 # https://msdn.microsoft.com/en-us/library/ms646310(v=vs.85).aspx
 
@@ -63,16 +63,16 @@ class KEYSTATERES(Structure):
 
 USER32 = WinDLL('user32')
 
-#general
+# general
 SENDINPUT = USER32.SendInput
 SENDINPUT.argtypes = [wintypes.UINT, POINTER(INPUT), wintypes.INT]
 
 GETSYSTEMMETRICS = USER32.GetSystemMetrics
 
 SETPROCESSDPIAWARE = USER32.SetProcessDPIAware
-#endgeneral
+# endgeneral
 
-#keybord
+# keybord
 VKKEYSCANEX = USER32.VkKeyScanExW
 VKKEYSCANEX.argtypes = [wintypes.WCHAR, wintypes.HKL]
 VKKEYSCANEX.restype = KEYSCANRES
@@ -88,26 +88,33 @@ GETASYNCKEYSTATE.restype = KEYSTATERES
 MAPVIRTUALKEYEX = USER32.MapVirtualKeyExW
 MAPVIRTUALKEYEX.argtypes = [wintypes.UINT, wintypes.UINT, wintypes.HKL]
 MAPVIRTUALKEYEX.restype = wintypes.UINT
-#endkeyboard
+# endkeyboard
 
-#mouse
+# mouse
 GETCURSORPOS = USER32.GetCursorPos
 GETCURSORPOS.argtypes = [POINTER(wintypes.POINT)]
-#endmouse
+# endmouse
 
-#window
+# window
 FINDWINDOWEX = USER32.FindWindowExW
-FINDWINDOWEX.argtypes = [wintypes.HWND, wintypes.HWND, wintypes.LPCWSTR, wintypes.LPCWSTR]
+FINDWINDOWEX.argtypes = [wintypes.HWND,
+                         wintypes.HWND, wintypes.LPCWSTR, wintypes.LPCWSTR]
 FINDWINDOWEX.restype = wintypes.HWND
 
 SWITCHTOTHISWINDOW = USER32.SwitchToThisWindow
-SWITCHTOTHISWINDOW.argtypes = [wintypes.HWND, wintypes.BOOLEAN]
+SWITCHTOTHISWINDOW.argtypes = [wintypes.HWND, c_bool]
 SWITCHTOTHISWINDOW.restype = wintypes.LPVOID
 
 SETFOREGROUNDWINDOW = USER32.SetForegroundWindow
 SETFOREGROUNDWINDOW.argtypes = [wintypes.HWND]
-SETFOREGROUNDWINDOW.restype = wintypes.BOOLEAN
+SETFOREGROUNDWINDOW.restype = c_bool
 
 GETFOREGROUNDWINDOW = USER32.GetForegroundWindow
 GETFOREGROUNDWINDOW.restype = wintypes.HWND
-#endwindow
+# endwindow
+
+# process
+GETWINDOWTHREADPROCESSID = USER32.GetWindowThreadProcessId
+GETWINDOWTHREADPROCESSID.argtypes = [wintypes.HWND, wintypes.LPDWORD]
+GETWINDOWTHREADPROCESSID.restype = wintypes.DWORD
+# endprocess
