@@ -1,1 +1,1 @@
-__all__ = ['keyboard', 'mouse', 'window', 'vkcodes']
+__all__ = ['keyboard', 'mouse', 'window', 'process', 'vkcodes']
