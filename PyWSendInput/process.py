@@ -1,5 +1,5 @@
 from copy import copy
-from ctypes import byref, c_bool, c_int, sizeof, wintypes
+from ctypes import byref, c_bool, c_int, sizeof, wintypes, c_longlong
 from os import path
 
 from PyWSendInput._kernel32 import (CLOSEHANDLE, CONTEXT,
@@ -12,6 +12,7 @@ from PyWSendInput._kernel32 import (CLOSEHANDLE, CONTEXT,
                                     THREAD32FIRST, THREAD32NEXT, THREADENTRY32,
                                     WRITEPROCESSMEMORY)
 from PyWSendInput._user32 import GETWINDOWTHREADPROCESSID
+from PyWSendInput._ntdll import NTQUERYINFORMATIONTHREAD, THREADBASICINFORMATION
 
 PROCESS_ALL_ACCESS = (0x000F0000 | 0x00100000 | 0xFFF)
 
@@ -94,7 +95,9 @@ def open_thread(thid, desired_access=THREAD_GET_CONTEXT | THREAD_QUERY_INFORMATI
 
 
 def get_thread_stack(thid, phandle):
-    stack = c_int(0)
+    is64b = is_process_64bit(phandle)
+    addrtype = c_longlong if is64b else c_int
+    stack = addrtype(0)
     thandle = open_thread(thid)
     result = 0
 
@@ -107,10 +110,17 @@ def get_thread_stack(thid, phandle):
         close_handle(thandle)
         return result
 
-    is64b = is_process_64bit(phandle)
-
     if is64b == IS64BIT:
-        pass
+        tbi = THREADBASICINFORMATION()
+        ntstatus = NTQUERYINFORMATIONTHREAD(
+            thandle, 0, byref(tbi), sizeof(tbi), None)
+        if ntstatus:
+            print('NTSTATUS:', format(ntstatus & 0xffffffff, '#010x'))
+            close_handle(thandle)
+            return result
+
+        read_process_memory(phandle, tbi.TebBaseAddress +
+                            sizeof(stack), byref(stack), sizeof(stack))
     else:
         context = CONTEXT()
         context.ContextFlags = CONTEXT_SEGMENTS
@@ -123,29 +133,27 @@ def get_thread_stack(thid, phandle):
             close_handle(thandle)
             return result
 
-        val1 = ldt.HighWord.Bytes.BaseMid if ldt.HighWord.Bytes.BaseMid >= 0 else 256 + \
-            ldt.HighWord.Bytes.BaseMid
-        val2 = ldt.HighWord.Bytes.BaseHi if ldt.HighWord.Bytes.BaseHi >= 0 else 256 + \
-            ldt.HighWord.Bytes.BaseHi
+        val1 = ldt.HighWord.Bytes.BaseMid & 0xff
+        val2 = ldt.HighWord.Bytes.BaseHi & 0xff
         address = ldt.BaseLow + (val1 << 16) + (val2 << 24)
-        read_process_memory(phandle, address + 4, byref(stack), 4)
+        read_process_memory(phandle, address + sizeof(stack),
+                            byref(stack), sizeof(stack))
 
     if not stack.value:
         close_handle(thandle)
         return result
 
     result = stack.value
-    addrsize = 8 if is64b else 4
-    buffer = (c_int * (4096 // addrsize))()
+    buffer = (addrtype * (4096 // sizeof(stack)))()
 
     if not read_process_memory(phandle, stack.value - 4096, buffer, 4096):
         close_handle(thandle)
         return result
 
-    for idx in range(4096 // 4 - 1, -1, -1):
+    for idx in range(4096 // sizeof(stack) - 1, -1, -1):
         value = buffer[idx]
         if value >= minfo.lpBaseOfDll and value <= minfo.lpBaseOfDll + minfo.SizeOfImage:
-            result = stack.value - 4096 + idx * addrsize
+            result = stack.value - 4096 + idx * sizeof(stack)
             break
 
     close_handle(thandle)
@@ -198,7 +206,8 @@ class Address(object):
 
 class PointerAddress(Address):
     def __init__(self, process_handle, ctype, base_address, *args):
-        super(PointerAddress, self).__init__(process_handle, ctype, base_address)
+        super(PointerAddress, self).__init__(
+            process_handle, ctype, base_address)
         self.offsets = args
 
     def get_address(self):
