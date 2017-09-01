@@ -170,3 +170,54 @@ def get_modules_from_process(phandle):
             modules[idx] = hmodules[idx]
 
     return modules
+
+
+class Address(object):
+    def __init__(self, process_handle, ctype, base_address):
+        self._phandle = process_handle
+        self._value = ctype()
+        self.base_address = base_address
+        self.ctype = ctype
+
+    @property
+    def value(self):
+        read_process_memory(self._phandle, self.base_address,
+                            byref(self._value), sizeof(self.ctype))
+        return self._value.value
+
+    @value.setter
+    def value(self, value):
+        self._value.value = value
+        write_process_memory(self._phandle, self.base_address,
+                             byref(self._value), sizeof(self.ctype))
+
+    def change_ctype(self, ctype, value=None):
+        self.ctype = ctype
+        self._value = ctype(value or self._value.value)
+
+
+class PointerAddress(Address):
+    def __init__(self, process_handle, ctype, base_address, *args):
+        super(PointerAddress, self).__init__(process_handle, ctype, base_address)
+        self.offsets = args
+
+    def get_address(self):
+        address = c_int(self.base_address)
+
+        for offset in self.offsets[:-1]:
+            read_process_memory(self._phandle, address.value +
+                                offset, byref(address), sizeof(address))
+
+        return address.value + self.offsets[-1]
+
+    @property
+    def value(self):
+        read_process_memory(self._phandle, self.get_address(),
+                            byref(self._value), sizeof(self.ctype))
+        return self._value.value
+
+    @value.setter
+    def value(self, value):
+        self._value.value = value
+        write_process_memory(self._phandle, self.get_address(),
+                             byref(self._value), sizeof(self.ctype))
