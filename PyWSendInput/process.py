@@ -209,9 +209,10 @@ class PointerAddress(Address):
         super(PointerAddress, self).__init__(
             process_handle, ctype, base_address)
         self.offsets = args
+        self._addrtype = c_longlong if is_process_64bit(process_handle) else c_int
 
     def get_address(self):
-        address = c_int(self.base_address)
+        address = self._addrtype(self.base_address)
 
         for offset in self.offsets[:-1]:
             read_process_memory(self._phandle, address.value +
