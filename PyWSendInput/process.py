@@ -187,6 +187,12 @@ class Address(object):
         self.base_address = base_address
         self.ctype = ctype
 
+    def __str__(self):
+        return str(self.value)
+
+    def __repr__(self):
+        return '{:#X}: '.format(self.base_address)+str(self.value)
+
     @property
     def value(self):
         read_process_memory(self._phandle, self.base_address,
