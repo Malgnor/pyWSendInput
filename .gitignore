@@ -2,3 +2,4 @@
 __pycache__/
 PyWSendInput.egg-info/
 dist/
+build/
