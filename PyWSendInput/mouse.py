@@ -2,7 +2,7 @@ from ctypes import byref, sizeof, wintypes
 from time import sleep
 
 from PyWSendInput._user32 import (GETCURSORPOS, GETSYSTEMMETRICS, INPUT, INPUT_MOUSE,
-                                  MOUSEINPUT, SENDINPUT)
+                                  MOUSEINPUT, SENDINPUT, SETCURSORPOS)
 
 XBUTTON1 = 0x0001
 XBUTTON2 = 0x0002
@@ -82,3 +82,6 @@ def get_cursor_position():
 
 def get_screen_size():
     return (GETSYSTEMMETRICS(0), GETSYSTEMMETRICS(1))
+
+def set_cursor_pos(x, y):
+    return SETCURSORPOS(x, y)

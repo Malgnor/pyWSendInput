@@ -93,6 +93,11 @@ MAPVIRTUALKEYEX.restype = wintypes.UINT
 # mouse
 GETCURSORPOS = USER32.GetCursorPos
 GETCURSORPOS.argtypes = [POINTER(wintypes.POINT)]
+GETCURSORPOS.restype = c_bool
+
+SETCURSORPOS = USER32.SetCursorPos
+SETCURSORPOS.argtypes = [wintypes.INT, wintypes.INT]
+SETCURSORPOS.restype = c_bool
 # endmouse
 
 # window
