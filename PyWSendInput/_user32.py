@@ -115,6 +115,10 @@ GETFOREGROUNDWINDOW.restype = wintypes.HWND
 SENDMESSAGE = USER32.SendMessageW
 SENDMESSAGE.argtypes = [wintypes.HWND,
                         wintypes.UINT, wintypes.WPARAM, wintypes.LPARAM]
+
+GETWINDOWRECT = USER32.GetWindowRect
+GETWINDOWRECT.argtypes = [wintypes.HWND, POINTER(wintypes.RECT)]
+GETWINDOWRECT.restype = c_bool
 # endwindow
 
 # process

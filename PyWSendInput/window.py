@@ -1,4 +1,5 @@
-from PyWSendInput._user32 import FINDWINDOWEX, SWITCHTOTHISWINDOW, SETFOREGROUNDWINDOW, GETFOREGROUNDWINDOW, SENDMESSAGE
+from PyWSendInput._user32 import FINDWINDOWEX, SWITCHTOTHISWINDOW, SETFOREGROUNDWINDOW, GETFOREGROUNDWINDOW, SENDMESSAGE, GETWINDOWRECT
+from ctypes import byref, wintypes
 
 WM_KEYDOWN = 0x0100
 WM_KEYUP = 0x0101
@@ -23,6 +24,11 @@ def get_foreground_window():
 
 def send_message(window, msg, wparam, lparam=0):
     return SENDMESSAGE(window, msg, wparam, lparam)
+
+def get_window_rect(window):
+    rect = wintypes.RECT()
+    result = GETWINDOWRECT(window, byref(rect))
+    return result, (rect.left, rect.top, rect.right, rect.bottom)
 
 
 class Window(object):
